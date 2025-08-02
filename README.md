@@ -6,8 +6,7 @@ Dự án này sử dụng GitHub Actions để tự động chạy Postman tests
 
 ```
 ├── .github/workflows/
-│   ├── postman-tests.yml          # Workflow cơ bản
-│   └── postman-data-driven.yml    # Workflow cho data-driven tests
+│   └── postman-ci.yml             # Workflow tổng hợp cho CI/CD
 ├── data/
 │   ├── post_favorite_test_data.csv
 │   ├── get_favorite_test_data.csv
@@ -16,18 +15,14 @@ Dự án này sử dụng GitHub Actions để tự động chạy Postman tests
 └── Favorite API Environment.postman_environment.json
 ```
 
-## Workflows
+## Workflow
 
-### 1. Postman Tests (postman-tests.yml)
-- **Trigger**: Push/PR vào main/develop
-- **Chức năng**: Chạy toàn bộ collection tests
-- **Reports**: CLI output + JUnit XML
-
-### 2. Data-Driven Tests (postman-data-driven.yml)
-- **Trigger**: Push/PR + Manual trigger
-- **Chức năng**: Chạy tests với data từ CSV files
-- **Matrix**: Chạy song song cho post/get/delete tests
-- **Reports**: Riêng biệt cho từng loại test
+### Postman CI/CD (postman-ci.yml)
+- **Trigger**: Push/PR vào main/develop + Manual trigger
+- **Jobs**:
+  - **Basic Tests**: Chạy toàn bộ collection tests
+  - **Data-Driven Tests**: Chạy tests với CSV data (post/get/delete)
+- **Reports**: CLI output + JUnit XML cho từng job
 
 ## Cách sử dụng
 
@@ -38,9 +33,12 @@ Dự án này sử dụng GitHub Actions để tự động chạy Postman tests
 
 ### Chạy thủ công
 1. Vào GitHub Actions tab
-2. Chọn workflow "Postman Data-Driven Tests"
+2. Chọn workflow "Postman API Tests CI/CD"
 3. Click "Run workflow"
-4. Chọn loại test muốn chạy
+4. Chọn loại test muốn chạy:
+   - **all**: Chạy cả basic và data-driven tests
+   - **basic**: Chỉ chạy tests cơ bản
+   - **data-driven**: Chỉ chạy data-driven tests
 
 ### Xem kết quả
 - **GitHub Actions**: Xem logs và status
