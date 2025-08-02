@@ -1,4 +1,4 @@
-# API Testing Assignment - Student ID: 22127240 
+# API Testing Assignment - Student ID: 22127240   
 
 ## Project Overview
 This repository contains the complete API testing assignment for CS423 - Software Testing course. The project focuses on testing the Favorite APIs of The Toolshop application using data-driven testing approach.
