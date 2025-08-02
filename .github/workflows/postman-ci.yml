@@ -39,14 +39,7 @@ jobs:
     - name: Install Newman CLI
       run: npm install -g newman
       
-    - name: Run Authentication First
-      run: |
-        # Chạy authentication trước để lấy token
-        newman run "Favorite API Tests - Data Driven.postman_collection.json" \
-          -e "Favorite API Environment.postman_environment.json" \
-          --folder "Authentication" \
-          --reporters cli \
-          --silent
+
           
     - name: Run Postman Tests
       run: |
