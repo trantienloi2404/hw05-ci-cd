@@ -39,14 +39,43 @@ jobs:
     - name: Install Newman CLI
       run: npm install -g newman
       
-    - name: Run Postman Tests
+    - name: Run Authentication First
       run: |
+        # Chạy authentication trước để lấy token
         newman run "Favorite API Tests - Data Driven.postman_collection.json" \
           -e "Favorite API Environment.postman_environment.json" \
-          --iteration-data "data/${{ matrix.test_data }}_favorite_test_data.csv" \
-          --reporters cli,junit \
-          --reporter-junit-export "${{ matrix.test_data }}_results.xml" \
-          --bail
+          --folder "Authentication" \
+          --reporters cli \
+          --silent
+          
+    - name: Run Postman Tests
+      run: |
+        # Chạy tests theo loại (post/get/delete)
+        if [ "${{ matrix.test_data }}" = "post" ]; then
+          newman run "Favorite API Tests - Data Driven.postman_collection.json" \
+            -e "Favorite API Environment.postman_environment.json" \
+            --folder "Add Favorite" \
+            --iteration-data "data/${{ matrix.test_data }}_favorite_test_data.csv" \
+            --reporters cli,junit \
+            --reporter-junit-export "${{ matrix.test_data }}_results.xml" \
+            --bail
+        elif [ "${{ matrix.test_data }}" = "get" ]; then
+          newman run "Favorite API Tests - Data Driven.postman_collection.json" \
+            -e "Favorite API Environment.postman_environment.json" \
+            --folder "Get Favorites" \
+            --iteration-data "data/${{ matrix.test_data }}_favorite_test_data.csv" \
+            --reporters cli,junit \
+            --reporter-junit-export "${{ matrix.test_data }}_results.xml" \
+            --bail
+        elif [ "${{ matrix.test_data }}" = "delete" ]; then
+          newman run "Favorite API Tests - Data Driven.postman_collection.json" \
+            -e "Favorite API Environment.postman_environment.json" \
+            --folder "Delete Favorite" \
+            --iteration-data "data/${{ matrix.test_data }}_favorite_test_data.csv" \
+            --reporters cli,junit \
+            --reporter-junit-export "${{ matrix.test_data }}_results.xml" \
+            --bail
+        fi
           
     - name: Upload test results
       uses: actions/upload-artifact@v4
@@ -55,8 +84,5 @@ jobs:
         name: "${{ matrix.test_data }}-test-results"
         path: "${{ matrix.test_data }}_results.xml"
         
-    - name: Publish test results
-      uses: EnricoMi/publish-unit-test-result-action@v2
-      if: always()
-      with:
-        files: "${{ matrix.test_data }}_results.xml" 
+    # Note: Publish test results step removed due to GitHub permissions
+    # Test results are available as artifacts for download 

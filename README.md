@@ -41,8 +41,8 @@ Dự án này sử dụng GitHub Actions để tự động chạy Postman tests
 
 ### Xem kết quả
 - **GitHub Actions**: Xem logs và status
-- **Artifacts**: Download test results XML
-- **Test Results**: Xem chi tiết trong PR/commit
+- **Artifacts**: Download test results XML từ GitHub Actions tab
+- **Test Results**: Xem chi tiết trong workflow logs
 
 ## Cấu hình
 
