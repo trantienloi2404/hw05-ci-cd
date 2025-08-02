@@ -20,44 +20,12 @@ jobs:
 
       - name: Run Postman Tests
         run: |
-          mkdir -p testResults
-          
-          # Run tests with all folders in sequence for each iteration
-          echo "Running E2E tests..."
-          newman run "Favorite API Tests - Data Driven.postman_collection.json" \
-            -e "Favorite API Environment.postman_environment.json" \
-            --folder "Authentication" \
-            --folder "Add Favorite" \
-            --folder "Get Favorites" \
-            --folder "Delete Favorite" \
-            --iteration-count 1 \
-            --reporters cli,htmlextra \
-            --reporter-htmlextra-export testResults/htmlreport.html \
-            || true  # Continue even if tests fail
-            
-          # Run negative test cases separately
-          echo "Running negative test cases..."
-          newman run "Favorite API Tests - Data Driven.postman_collection.json" \
-            -e "Favorite API Environment.postman_environment.json" \
-            --folder "Authentication" \
-            --folder "Add Favorite" \
-            --iteration-data "data/post_favorite_test_data.csv" \
-            --reporters cli,htmlextra \
-            --reporter-htmlextra-export testResults/negative_tests_report.html \
-            || true  # Continue even if tests fail
-          
+          newman run "Favorite API Tests - Data Driven.postman_collection.json" -e "Favorite API Environment.postman_environment.json" --reporters cli,htmlextra --reporter-htmlextra-export testResults/htmlreport.html
+
       - name: Upload Test Results
         uses: actions/upload-artifact@v4
         if: always()
         with:
           name: test-results
-          path: testResults/htmlreport
+          path: testResults/htmlreport.html
           retention-days: 90
-
-      - name: Publish Test Results
-        if: always()
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./testResults
-          destination_dir: reports
