@@ -87,6 +87,14 @@
 									"    pm.response.to.have.status(parseInt(pm.iterationData.get('expected_status')));",
 									"});",
 									"",
+									"pm.test(\"Response time is less than 5000ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(5000);",
+									"});",
+									"",
+									"pm.test(\"Response has valid JSON\", function () {",
+									"    pm.response.to.be.json;",
+									"});",
+									"",
 									"if (pm.iterationData.get('expected_status') === '201') {",
 									"    pm.test(\"Response has required fields\", function () {",
 									"        var jsonData = pm.response.json();",
@@ -211,6 +219,14 @@
 									"    pm.response.to.have.status(parseInt(pm.iterationData.get('expected_status')));",
 									"});",
 									"",
+									"pm.test(\"Response time is less than 5000ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(5000);",
+									"});",
+									"",
+									"pm.test(\"Response has valid JSON\", function () {",
+									"    pm.response.to.be.json;",
+									"});",
+									"",
 									"if (pm.iterationData.get('expected_status') === '200') {",
 									"    pm.test(\"Response has required fields\", function () {",
 									"        var jsonData = pm.response.json();",
@@ -274,9 +290,17 @@
 									"    pm.response.to.have.status(parseInt(pm.iterationData.get('expected_status')));",
 									"});",
 									"",
+									"pm.test(\"Response time is less than 5000ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(5000);",
+									"});",
+									"",
 									"if (pm.iterationData.get('expected_status') === '204') {",
 									"    pm.test(\"No content response\", function () {",
 									"        pm.expect(pm.response.text()).to.be.empty;",
+									"    });",
+									"} else {",
+									"    pm.test(\"Response has valid JSON\", function () {",
+									"        pm.response.to.be.json;",
 									"    });",
 									"}",
 									"",
@@ -342,25 +366,7 @@
 				]
 			}
 		},
-		{
-			"listen": "test",
-			"script": {
-				"type": "text/javascript",
-				"exec": [
-					"// Global test script",
-					"pm.test(\"Response time is less than 5000ms\", function () {",
-					"    pm.expect(pm.response.responseTime).to.be.below(5000);",
-					"});",
-					"",
-					"// Only test JSON for non-204 responses",
-					"if (pm.response.code !== 204) {",
-					"    pm.test(\"Response has valid JSON\", function () {",
-					"        pm.response.to.be.json;",
-					"    });",
-					"}"
-				]
-			}
-		}
+
 	],
 	"variable": [
 		{
