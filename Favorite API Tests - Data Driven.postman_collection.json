@@ -1,0 +1,379 @@
+{
+	"info": {
+		"_postman_id": "6c76c68e-9ca5-4ed0-923d-d617933e5211",
+		"name": "Favorite API Tests - Data Driven",
+		"description": "Comprehensive test collection for Favorite API using data-driven testing techniques",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "44702979"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test script for login",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has access_token\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('access_token');",
+									"    pm.expect(jsonData.access_token).to.not.be.empty;",
+									"});",
+									"",
+									"pm.test(\"Response has token_type\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('token_type');",
+									"    pm.expect(jsonData.token_type).to.eql('bearer');",
+									"});",
+									"",
+									"// Store token for other requests",
+									"if (pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.environment.set('access_token', jsonData.access_token);",
+									"    pm.environment.set('token_type', jsonData.token_type);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"{{email}}\",\n    \"password\": \"{{password}}\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/users/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Add Favorite",
+			"item": [
+				{
+					"name": "Add Favorite - Data Driven",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Data-driven test for adding favorites",
+									"pm.test(\"Status code is \" + pm.iterationData.get('expected_status'), function () {",
+									"    pm.response.to.have.status(parseInt(pm.iterationData.get('expected_status')));",
+									"});",
+									"",
+									"if (pm.iterationData.get('expected_status') === '201') {",
+									"    pm.test(\"Response has required fields\", function () {",
+									"        var jsonData = pm.response.json();",
+									"        pm.expect(jsonData).to.have.property('id');",
+									"        pm.expect(jsonData).to.have.property('user_id');",
+									"        pm.expect(jsonData).to.have.property('product_id');",
+									"        pm.expect(jsonData.product_id).to.eql(parseInt(pm.iterationData.get('product_id')));",
+									"    });",
+									"}",
+									"",
+									"if (pm.iterationData.get('expected_status') === '422') {",
+									"    pm.test(\"Validation error response\", function () {",
+									"        var jsonData = pm.response.json();",
+									"        pm.expect(jsonData).to.have.property('message');",
+									"    });",
+									"}",
+									"",
+									"pm.test(\"Response time is less than 2000ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(2000);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"product_id\": {{product_id}}\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/favorites",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"favorites"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Get Favorites",
+			"item": [
+				{
+					"name": "Get All Favorites",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test script for getting all favorites",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response is an array\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.be.an('array');",
+									"});",
+									"",
+									"pm.test(\"Each favorite has required fields\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    if (jsonData.length > 0) {",
+									"        pm.expect(jsonData[0]).to.have.property('id');",
+									"        pm.expect(jsonData[0]).to.have.property('user_id');",
+									"        pm.expect(jsonData[0]).to.have.property('product_id');",
+									"    }",
+									"});",
+									"",
+									"pm.test(\"Response time is less than 1000ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/favorites",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"favorites"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Favorite by ID - Data Driven",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Data-driven test for getting favorite by ID",
+									"pm.test(\"Status code is \" + pm.iterationData.get('expected_status'), function () {",
+									"    pm.response.to.have.status(parseInt(pm.iterationData.get('expected_status')));",
+									"});",
+									"",
+									"if (pm.iterationData.get('expected_status') === '200') {",
+									"    pm.test(\"Response has required fields\", function () {",
+									"        var jsonData = pm.response.json();",
+									"        pm.expect(jsonData).to.have.property('id');",
+									"        pm.expect(jsonData).to.have.property('user_id');",
+									"        pm.expect(jsonData).to.have.property('product_id');",
+									"    });",
+									"}",
+									"",
+									"if (pm.iterationData.get('expected_status') === '404') {",
+									"    pm.test(\"Not found response\", function () {",
+									"        var jsonData = pm.response.json();",
+									"        pm.expect(jsonData).to.have.property('message');",
+									"    });",
+									"}",
+									"",
+									"pm.test(\"Response time is less than 1000ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/favorites/{{product_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"favorites",
+								"{{product_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Delete Favorite",
+			"item": [
+				{
+					"name": "Delete Favorite - Data Driven",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Data-driven test for deleting favorites",
+									"pm.test(\"Status code is \" + pm.iterationData.get('expected_status'), function () {",
+									"    pm.response.to.have.status(parseInt(pm.iterationData.get('expected_status')));",
+									"});",
+									"",
+									"if (pm.iterationData.get('expected_status') === '204') {",
+									"    pm.test(\"No content response\", function () {",
+									"        pm.expect(pm.response.text()).to.be.empty;",
+									"    });",
+									"}",
+									"",
+									"if (pm.iterationData.get('expected_status') === '404') {",
+									"    pm.test(\"Not found response\", function () {",
+									"        var jsonData = pm.response.json();",
+									"        pm.expect(jsonData).to.have.property('message');",
+									"    });",
+									"}",
+									"",
+									"pm.test(\"Response time is less than 1000ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/favorites/{{product_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"favorites",
+								"{{product_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Global pre-request script",
+					"console.log('Starting test: ' + pm.info.requestName);",
+					"console.log('Iteration: ' + (pm.info.iteration + 1));"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Global test script",
+					"pm.test(\"Response time is less than 5000ms\", function () {",
+					"    pm.expect(pm.response.responseTime).to.be.below(5000);",
+					"});",
+					"",
+					"pm.test(\"Response has valid JSON\", function () {",
+					"    pm.response.to.be.json;",
+					"});"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8000/api",
+			"type": "string"
+		},
+		{
+			"key": "access_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "token_type",
+			"value": "bearer",
+			"type": "string"
+		}
+	]
+}

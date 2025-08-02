@@ -1,0 +1,4 @@
+test_case,test_name,method,endpoint,product_id,expected_status,expected_message,description
+1,Get_All_Favorites,GET,/favorites,,200,,"Get all favorites for authenticated user"
+2,Get_Favorite_By_ID,GET,/favorites/1,1,200,,"Get specific favorite by ID"
+3,Get_Favorite_Invalid_ID,GET,/favorites/99999,99999,404,,"Get favorite with non-existent ID"

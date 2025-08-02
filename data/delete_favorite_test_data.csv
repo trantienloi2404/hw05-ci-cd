@@ -1,0 +1,3 @@
+test_case,test_name,method,endpoint,product_id,expected_status,expected_message,description
+1,Delete_Favorite_By_ID,DELETE,/favorites/1,1,204,,"Delete favorite by ID"
+2,Delete_Favorite_Invalid_ID,DELETE,/favorites/99999,99999,404,,"Delete favorite with non-existent ID" 

@@ -1,0 +1,5 @@
+test_case,test_name,method,endpoint,product_id,expected_status,expected_message,description
+1,Add_Valid_Favorite,POST,/favorites,1,201,,"Add favorite with valid product ID"
+2,Add_Duplicate_Favorite,POST,/favorites,1,422,,"Try to add duplicate favorite (should fail)"
+3,Add_Favorite_Invalid_Product,POST,/favorites,99999,422,,"Add favorite with non-existent product ID"
+4,Add_Favorite_String_Product,POST,/favorites,abc,422,,"Add favorite with string product ID"
