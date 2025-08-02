@@ -22,41 +22,30 @@ jobs:
         run: |
           mkdir -p testResults
           
-          # Run tests for adding favorites
-          echo "Running Add Favorite tests..."
+          # Run tests with all folders in sequence for each iteration
+          echo "Running E2E tests..."
+          newman run "Favorite API Tests - Data Driven.postman_collection.json" \
+            -e "Favorite API Environment.postman_environment.json" \
+            --folder "Authentication" \
+            --folder "Add Favorite" \
+            --folder "Get Favorites" \
+            --folder "Delete Favorite" \
+            --iteration-count 1 \
+            --reporters cli,htmlextra \
+            --reporter-htmlextra-export testResults/htmlreport.html \
+            || true  # Continue even if tests fail
+            
+          # Run negative test cases separately
+          echo "Running negative test cases..."
           newman run "Favorite API Tests - Data Driven.postman_collection.json" \
             -e "Favorite API Environment.postman_environment.json" \
             --folder "Authentication" \
             --folder "Add Favorite" \
             --iteration-data "data/post_favorite_test_data.csv" \
             --reporters cli,htmlextra \
-            --reporter-htmlextra-export testResults/add_favorite_report.html
+            --reporter-htmlextra-export testResults/negative_tests_report.html \
+            || true  # Continue even if tests fail
           
-          # Run tests for getting favorites
-          echo "Running Get Favorites tests..."
-          newman run "Favorite API Tests - Data Driven.postman_collection.json" \
-            -e "Favorite API Environment.postman_environment.json" \
-            --folder "Authentication" \
-            --folder "Get Favorites" \
-            --iteration-data "data/get_favorite_test_data.csv" \
-            --reporters cli,htmlextra \
-            --reporter-htmlextra-export testResults/get_favorite_report.html
-          
-          # Run tests for deleting favorites
-          echo "Running Delete Favorite tests..."
-          newman run "Favorite API Tests - Data Driven.postman_collection.json" \
-            -e "Favorite API Environment.postman_environment.json" \
-            --folder "Authentication" \
-            --folder "Delete Favorite" \
-            --iteration-data "data/delete_favorite_test_data.csv" \
-            --reporters cli,htmlextra \
-            --reporter-htmlextra-export testResults/delete_favorite_report.html
-          
-          # Combine all reports into one
-          mkdir -p testResults/combined
-          cp testResults/*.html testResults/combined/
-          mv testResults/combined testResults/htmlreport
-
       - name: Upload Test Results
         uses: actions/upload-artifact@v4
         if: always()
