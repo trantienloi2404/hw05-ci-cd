@@ -20,7 +20,14 @@ jobs:
 
       - name: Run Postman Tests
         run: |
-          newman run "Favorite API Tests - Data Driven.postman_collection.json" -e "Favorite API Environment.postman_environment.json" --reporters cli,htmlextra --reporter-htmlextra-export testResults/htmlreport.html
+          mkdir -p testResults
+          newman run "Favorite API Tests - Data Driven.postman_collection.json" \
+            -e "Favorite API Environment.postman_environment.json" \
+            --iteration-data "data/post_favorite_test_data.csv" \
+            --iteration-data "data/get_favorite_test_data.csv" \
+            --iteration-data "data/delete_favorite_test_data.csv" \
+            --reporters cli,htmlextra \
+            --reporter-htmlextra-export testResults/htmlreport.html
 
       - name: Upload Test Results
         uses: actions/upload-artifact@v4
