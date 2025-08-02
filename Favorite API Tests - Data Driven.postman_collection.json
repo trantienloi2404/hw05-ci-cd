@@ -87,14 +87,6 @@
 									"    pm.response.to.have.status(parseInt(pm.iterationData.get('expected_status')));",
 									"});",
 									"",
-									"pm.test(\"Response time is less than 2000ms\", function () {",
-									"    pm.expect(pm.response.responseTime).to.be.below(2000);",
-									"});",
-									"",
-									"pm.test(\"Response has valid JSON\", function () {",
-									"    pm.response.to.be.json;",
-									"});",
-									"",
 									"if (pm.iterationData.get('expected_status') === '201') {",
 									"    pm.test(\"Response has required fields\", function () {",
 									"        var jsonData = pm.response.json();",
@@ -110,7 +102,11 @@
 									"        var jsonData = pm.response.json();",
 									"        pm.expect(jsonData).to.have.property('message');",
 									"    });",
-									"}"
+									"}",
+									"",
+									"pm.test(\"Response time is less than 2000ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(2000);",
+									"});"
 								],
 								"type": "text/javascript"
 							}
@@ -215,14 +211,6 @@
 									"    pm.response.to.have.status(parseInt(pm.iterationData.get('expected_status')));",
 									"});",
 									"",
-									"pm.test(\"Response time is less than 1000ms\", function () {",
-									"    pm.expect(pm.response.responseTime).to.be.below(1000);",
-									"});",
-									"",
-									"pm.test(\"Response has valid JSON\", function () {",
-									"    pm.response.to.be.json;",
-									"});",
-									"",
 									"if (pm.iterationData.get('expected_status') === '200') {",
 									"    pm.test(\"Response has required fields\", function () {",
 									"        var jsonData = pm.response.json();",
@@ -237,7 +225,11 @@
 									"        var jsonData = pm.response.json();",
 									"        pm.expect(jsonData).to.have.property('message');",
 									"    });",
-									"}"
+									"}",
+									"",
+									"pm.test(\"Response time is less than 1000ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);",
+									"});"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -282,17 +274,9 @@
 									"    pm.response.to.have.status(parseInt(pm.iterationData.get('expected_status')));",
 									"});",
 									"",
-									"pm.test(\"Response time is less than 1000ms\", function () {",
-									"    pm.expect(pm.response.responseTime).to.be.below(1000);",
-									"});",
-									"",
 									"if (pm.iterationData.get('expected_status') === '204') {",
 									"    pm.test(\"No content response\", function () {",
 									"        pm.expect(pm.response.text()).to.be.empty;",
-									"    });",
-									"} else {",
-									"    pm.test(\"Response has valid JSON\", function () {",
-									"        pm.response.to.be.json;",
 									"    });",
 									"}",
 									"",
@@ -301,7 +285,11 @@
 									"        var jsonData = pm.response.json();",
 									"        pm.expect(jsonData).to.have.property('message');",
 									"    });",
-									"}"
+									"}",
+									"",
+									"pm.test(\"Response time is less than 1000ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);",
+									"});"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -354,7 +342,22 @@
 				]
 			}
 		},
-
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Global test script",
+					"pm.test(\"Response time is less than 5000ms\", function () {",
+					"    pm.expect(pm.response.responseTime).to.be.below(5000);",
+					"});",
+					"",
+					"pm.test(\"Response has valid JSON\", function () {",
+					"    pm.response.to.be.json;",
+					"});"
+				]
+			}
+		}
 	],
 	"variable": [
 		{
