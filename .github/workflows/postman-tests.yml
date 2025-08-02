@@ -1,0 +1,38 @@
+name: Postman API Tests
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+
+      - name: Install Newman
+        run: |
+          npm install -g newman
+          npm install -g newman-reporter-htmlextra
+
+      - name: Run Postman Tests
+        run: |
+          newman run "Favorite API Tests - Data Driven.postman_collection.json" -e "Favorite API Environment.postman_environment.json" --reporters cli,htmlextra --reporter-htmlextra-export testResults/htmlreport.html
+
+      - name: Upload Test Results
+        uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: test-results
+          path: testResults/htmlreport.html
+
+      - name: Publish Test Results
+        if: always()
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./testResults
+          destination_dir: reports
